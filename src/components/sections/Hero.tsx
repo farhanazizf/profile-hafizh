@@ -26,47 +26,52 @@ export default function Hero() {
         <div className="md:col-span-8">
           <SectionLabel index="01" label="Index" />
 
-          <motion.p
+          <motion.h1
             custom={0}
             variants={rise}
             initial="hidden"
             animate="show"
-            className="mt-8 font-mono text-sm uppercase tracking-[0.2em] text-ink-muted"
+            className="mt-8 font-display font-semibold tracking-[-0.03em] text-ink [font-optical-sizing:auto]"
+            style={{ fontSize: 'clamp(3.25rem, 8.5vw, 6rem)', lineHeight: 0.95 }}
           >
-            {person.name}
-          </motion.p>
-
-          <h1 className="mt-5 text-h1 text-ink">
-            <motion.span custom={1} variants={rise} initial="hidden" animate="show" className="block">
-              I build the pipelines
-            </motion.span>
-            <motion.span custom={2} variants={rise} initial="hidden" animate="show" className="block">
-              that turn scattered ops
-            </motion.span>
-            <motion.span custom={3} variants={rise} initial="hidden" animate="show" className="block">
-              data into{' '}
-              <span className="relative inline-block">
-                decisions.
-                <motion.span
-                  className="absolute -bottom-1 left-0 h-[0.14em] w-full origin-left bg-accent-data"
-                  initial={{ scaleX: 0 }}
-                  animate={{ scaleX: 1 }}
-                  transition={{ duration: 0.8, ease, delay: 1.05 }}
-                />
-              </span>
-            </motion.span>
-          </h1>
+            {person.name.split(' ')[0]}
+            <br />
+            {person.name.split(' ').slice(1).join(' ')}
+          </motion.h1>
 
           <motion.div
-            custom={4}
+            custom={1}
             variants={rise}
             initial="hidden"
             animate="show"
-            className="mt-10 space-y-1 font-mono text-sm uppercase tracking-[0.12em] text-ink-secondary"
+            className="mt-5 flex flex-wrap items-center gap-x-4 gap-y-1 font-mono text-[0.8125rem] uppercase tracking-[0.18em] text-ink-muted"
           >
-            <p>Data Engineer · Product Ops Analyst</p>
-            <p className="text-ink-muted">Karawang, Indonesia · Open to remote</p>
+            <span className="text-ink-secondary">Data Engineer</span>
+            <span aria-hidden="true">·</span>
+            <span>Product Ops Analyst</span>
+            <span aria-hidden="true">·</span>
+            <span>Karawang, ID — Open to remote</span>
           </motion.div>
+
+          <motion.p
+            custom={2}
+            variants={rise}
+            initial="hidden"
+            animate="show"
+            className="mt-10 max-w-2xl font-display text-ink-secondary"
+            style={{ fontSize: 'clamp(1.5rem, 2.6vw, 2.25rem)', lineHeight: 1.25 }}
+          >
+            I build the pipelines that turn scattered ops data into{' '}
+            <span className="relative inline-block whitespace-nowrap font-medium text-ink">
+              decisions.
+              <motion.span
+                className="absolute -bottom-1 left-0 h-[0.1em] w-full origin-left bg-accent-data"
+                initial={{ scaleX: 0 }}
+                animate={{ scaleX: 1 }}
+                transition={{ duration: 0.8, ease, delay: 0.95 }}
+              />
+            </span>
+          </motion.p>
 
           <motion.div
             custom={5}
