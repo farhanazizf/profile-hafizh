@@ -47,29 +47,39 @@ function Cover({ cover }: { cover: string }) {
 
 export default function SelectedWork() {
   const studies = listCaseStudies()
+  const trackPointer = (e: React.MouseEvent<HTMLAnchorElement>) => {
+    const el = e.currentTarget
+    const r = el.getBoundingClientRect()
+    el.style.setProperty('--mx', `${e.clientX - r.left}px`)
+    el.style.setProperty('--my', `${e.clientY - r.top}px`)
+  }
+
   return (
     <section id="work" className="scroll-mt-20">
       <HairlineRule />
       <div className="shell py-24 md:py-32">
         <SectionLabel index="04" label="Selected Work" />
 
-        <div className="mt-12 grid grid-cols-1 gap-px overflow-hidden border border-rule/50 bg-rule/30 md:grid-cols-2">
+        <div className="mt-12 grid grid-cols-1 gap-px overflow-hidden rounded-lg border border-rule/50 bg-rule/30 md:grid-cols-2">
           {studies.map((s) => (
             <Link
               key={s.slug}
               to={`/case-studies/${s.slug}`}
-              className="group flex flex-col bg-paper p-8 transition-colors duration-200 hover:bg-accent-soft"
+              onMouseMove={trackPointer}
+              className="spotlight tactile group flex flex-col bg-paper p-8 hover:bg-accent-soft hover:shadow-[0_24px_50px_-24px_color-mix(in_srgb,var(--color-ink)_22%,transparent)]"
             >
               <div className="grid h-40 place-items-center overflow-hidden border-b border-rule/40 pb-4">
-                <Cover cover={s.cover} />
+                <div className="transition-transform duration-500 ease-[cubic-bezier(0.16,1,0.3,1)] group-hover:scale-[1.04]">
+                  <Cover cover={s.cover} />
+                </div>
               </div>
               <h3 className="mt-6 font-display text-2xl text-ink">{s.title}</h3>
               <p className="mt-3 flex-1 text-ink-secondary">{s.dek}</p>
               <div className="mt-6 flex items-center justify-between">
-                <span className="font-mono text-[0.72rem] uppercase tracking-[0.12em] text-ink-muted">
+                <span className="tabular font-mono text-[0.72rem] uppercase tracking-[0.12em] text-ink-muted">
                   {s.year} · {s.tags.join(' · ')}
                 </span>
-                <span className="font-mono text-accent-data opacity-0 transition-all duration-200 group-hover:translate-x-1 group-hover:opacity-100">
+                <span className="font-mono text-accent-data opacity-0 transition-all duration-300 group-hover:translate-x-1 group-hover:opacity-100">
                   →
                 </span>
               </div>

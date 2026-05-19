@@ -14,13 +14,13 @@ export default function Experience() {
         <ol className="mt-12 border-l border-rule/50">
           {roles.map((role) => (
             <li key={`${role.title}-${role.start}`} className="relative pb-14 pl-8 last:pb-0 md:pl-12">
-              <span
-                className="absolute -left-[5px] top-1.5 h-2.5 w-2.5 rounded-full border border-rule bg-accent-data"
-                aria-hidden="true"
-              />
+              <span className="absolute -left-[5px] top-1.5" aria-hidden="true">
+                <span className="absolute inline-flex h-2.5 w-2.5 animate-ping rounded-full bg-accent-data opacity-40" />
+                <span className="relative inline-flex h-2.5 w-2.5 rounded-full border border-rule bg-accent-data" />
+              </span>
               <div className="grid grid-cols-1 gap-6 md:grid-cols-12">
                 <div className="md:col-span-3">
-                  <p className="font-mono text-[0.75rem] uppercase tracking-[0.12em] text-ink-muted">
+                  <p className="tabular font-mono text-[0.75rem] uppercase tracking-[0.12em] text-ink-muted">
                     {role.dateLabel}
                   </p>
                   <div className="mt-6 hidden h-10 w-28 md:block">

@@ -1,4 +1,4 @@
-import { useState } from 'react'
+import { useEffect, useState } from 'react'
 import ThemeToggle from '../ui/ThemeToggle'
 
 const LINKS = [
@@ -23,6 +23,27 @@ function StatusPill() {
 
 export default function Nav() {
   const [open, setOpen] = useState(false)
+  const [active, setActive] = useState<string>('')
+
+  useEffect(() => {
+    const ids = LINKS.map((l) => l.href.slice(1))
+    const sections = ids
+      .map((id) => document.getElementById(id))
+      .filter((el): el is HTMLElement => el !== null)
+    if (!sections.length) return
+
+    const io = new IntersectionObserver(
+      (entries) => {
+        const visible = entries
+          .filter((e) => e.isIntersecting)
+          .sort((a, b) => b.intersectionRatio - a.intersectionRatio)[0]
+        if (visible) setActive(visible.target.id)
+      },
+      { rootMargin: '-45% 0px -50% 0px', threshold: [0, 0.25, 0.6] },
+    )
+    sections.forEach((s) => io.observe(s))
+    return () => io.disconnect()
+  }, [])
 
   return (
     <header className="sticky top-0 z-40 border-b border-rule/60 bg-paper/85 backdrop-blur-md">
@@ -36,16 +57,28 @@ export default function Nav() {
         </a>
 
         <ul className="hidden items-center gap-8 md:flex">
-          {LINKS.map((l) => (
-            <li key={l.href}>
-              <a
-                href={l.href}
-                className="font-mono text-[0.78rem] uppercase tracking-[0.12em] text-ink-secondary transition-colors hover:text-accent-data"
-              >
-                {l.label}
-              </a>
-            </li>
-          ))}
+          {LINKS.map((l) => {
+            const isActive = active === l.href.slice(1)
+            return (
+              <li key={l.href}>
+                <a
+                  href={l.href}
+                  aria-current={isActive ? 'true' : undefined}
+                  className={`group relative py-1 font-mono text-[0.78rem] uppercase tracking-[0.12em] transition-colors ${
+                    isActive ? 'text-ink' : 'text-ink-muted hover:text-ink'
+                  }`}
+                >
+                  {l.label}
+                  <span
+                    className={`absolute -bottom-0.5 left-0 h-px bg-accent-data transition-all duration-300 ${
+                      isActive ? 'w-full opacity-100' : 'w-0 opacity-0 group-hover:w-full group-hover:opacity-60'
+                    }`}
+                    aria-hidden="true"
+                  />
+                </a>
+              </li>
+            )
+          })}
         </ul>
 
         <div className="flex items-center gap-3">

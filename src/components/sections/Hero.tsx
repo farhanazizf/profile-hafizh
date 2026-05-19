@@ -2,15 +2,22 @@ import { motion } from 'framer-motion'
 import SectionLabel from '../ui/SectionLabel'
 import StatBlock from '../ui/StatBlock'
 import HeroSparkline from '../viz/HeroSparkline'
+import MagneticButton from '../ui/MagneticButton'
 import { kpis, person } from '../../lib/data/experience'
 
 const ease: [number, number, number, number] = [0.16, 1, 0.3, 1]
 const rise = {
-  hidden: { opacity: 0, y: 14 },
+  hidden: { opacity: 0, y: 18 },
   show: (i: number) => ({
     opacity: 1,
     y: 0,
-    transition: { duration: 0.7, ease, delay: 0.15 + i * 0.09 },
+    transition: {
+      type: 'spring' as const,
+      stiffness: 90,
+      damping: 18,
+      mass: 0.7,
+      delay: 0.12 + i * 0.085,
+    },
   }),
 }
 
@@ -80,18 +87,26 @@ export default function Hero() {
             animate="show"
             className="mt-10 flex flex-wrap items-center gap-4"
           >
-            <a
+            <MagneticButton
               href="#contact"
-              className="group inline-flex items-center gap-2 rounded-full bg-accent-data px-6 py-3 font-mono text-sm uppercase tracking-[0.1em] text-[#fafaf7] transition-transform duration-200 active:scale-[0.98]"
+              className="group tactile inline-flex items-center gap-2 rounded-full bg-accent-data px-6 py-3 font-mono text-sm uppercase tracking-[0.1em] text-[#fafaf7] shadow-[0_10px_30px_-12px_color-mix(in_srgb,var(--color-accent-data)_70%,transparent)] hover:shadow-[0_16px_40px_-12px_color-mix(in_srgb,var(--color-accent-data)_75%,transparent)]"
             >
               Get in touch
-              <span className="transition-transform duration-200 group-hover:translate-x-1">→</span>
-            </a>
+              <span className="transition-transform duration-300 group-hover:translate-x-1">→</span>
+            </MagneticButton>
             <a
               href="#work"
-              className="inline-flex items-center gap-2 border-b border-rule/60 pb-1 font-mono text-sm uppercase tracking-[0.1em] text-ink-secondary transition-colors hover:border-accent-data hover:text-accent-data"
+              className="group relative inline-flex items-center gap-2 pb-1 font-mono text-sm uppercase tracking-[0.1em] text-ink-secondary transition-colors hover:text-ink"
             >
               View case studies
+              <span
+                className="absolute -bottom-0 left-0 h-px w-full origin-right scale-x-100 bg-rule/60 transition-transform duration-300 group-hover:origin-left"
+                aria-hidden="true"
+              />
+              <span
+                className="absolute -bottom-0 left-0 h-px w-full origin-left scale-x-0 bg-accent-data transition-transform duration-300 group-hover:scale-x-100"
+                aria-hidden="true"
+              />
             </a>
           </motion.div>
         </div>

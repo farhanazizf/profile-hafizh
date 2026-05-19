@@ -41,7 +41,7 @@ function ContactRow({ row }: { row: Row }) {
       <span className="w-28 shrink-0 font-mono text-[0.72rem] uppercase tracking-[0.14em] text-ink-muted">
         {row.label}
       </span>
-      <span className="flex-1 font-mono text-sm text-ink md:text-base">{row.value}</span>
+      <span className="tabular flex-1 font-mono text-sm text-ink md:text-base">{row.value}</span>
       <span
         className="font-mono text-[0.72rem] uppercase tracking-[0.12em] text-ink-muted transition-colors group-hover:text-accent-data"
         aria-live="polite"
@@ -95,7 +95,7 @@ export default function Contact() {
           ))}
         </div>
 
-        <p className="mt-12 font-mono text-[0.72rem] uppercase tracking-[0.16em] text-ink-muted">
+        <p className="tabular mt-12 font-mono text-[0.72rem] uppercase tracking-[0.16em] text-ink-muted">
           Last updated · {BUILD_DATE}
         </p>
       </div>

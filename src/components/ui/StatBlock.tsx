@@ -12,7 +12,7 @@ export default function StatBlock({ label, value, note }: Props) {
         {label}
       </span>
       <span
-        className="font-display font-semibold leading-none tracking-tight text-ink"
+        className="tabular font-display font-semibold leading-none tracking-tight text-ink"
         style={{ fontSize: 'clamp(2.75rem, 6vw, 4rem)' }}
       >
         {value}
