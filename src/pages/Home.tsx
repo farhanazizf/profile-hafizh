@@ -1,7 +1,9 @@
+import Hero from '../components/sections/Hero'
+
 export default function Home() {
   return (
     <main id="main">
-      <p className="p-8 font-mono text-sm">Hafizh — coming up</p>
+      <Hero />
     </main>
   )
 }
