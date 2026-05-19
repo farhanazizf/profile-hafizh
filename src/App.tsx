@@ -1,6 +1,7 @@
 import { useEffect } from 'react'
 import { Outlet, useLocation } from 'react-router-dom'
 import { initAnalytics, trackPageview } from './lib/analytics'
+import Nav from './components/nav/Nav'
 
 export default function App() {
   const { pathname } = useLocation()
@@ -22,6 +23,8 @@ export default function App() {
         Skip to content
       </a>
       <div className="grain-overlay" aria-hidden="true" />
+      <span id="top" />
+      <Nav />
       <Outlet />
     </>
   )
