@@ -1,7 +1,7 @@
 import { contact, person } from './data/experience'
 
 export const SITE_URL = (
-  import.meta.env.VITE_SITE_URL ?? 'https://hafizhfayiz.com'
+  import.meta.env.VITE_SITE_URL ?? 'https://hafizh.web.id'
 ).replace(/\/$/, '')
 
 export const DEFAULTS = {
