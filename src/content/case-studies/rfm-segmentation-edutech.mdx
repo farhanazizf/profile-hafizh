@@ -1,0 +1,87 @@
+---
+slug: rfm-segmentation-edutech
+title: RFM Segmentation for EduTech Retention
+dek: Segmenting learners into Champions, At-Risk, and Hibernating cohorts to drive a targeted re-engagement campaign.
+tags: [Product Analytics, Retention, "2025"]
+year: 2025
+cover: rfm-scatter
+metrics:
+  - label: Behavioural cohorts surfaced
+    value: "3"
+  - label: Framework
+    value: RFM + Amplitude
+  - label: Output
+    value: Call list
+---
+
+> DRAFT — AI-drafted from CV bullets. Cohort counts are illustrative until Hafizh confirms exact figures. Review before publishing.
+
+## Problem
+
+The EduTech growth team had a budget for re-engagement and no principled way to
+spend it. Outreach was effectively "email everyone" or "email whoever a sales
+rep remembered". Some of the people being chased had bought last week; some had
+been gone for a year and were never coming back. Effort was uniform across a
+population that was anything but.
+
+The question underneath was concrete: of all our learners, which few hundred
+should a human actually call this week to move revenue — and which should we
+leave alone?
+
+## Approach
+
+RFM — Recency, Frequency, Monetary — is the standard lens for exactly this, so
+I started there rather than inventing something clever. Each learner gets scored
+on how recently they purchased, how often, and how much. The scores bucket into
+segments with obvious operational meaning: Champions (recent, frequent, high
+value), At-Risk (used to be valuable, going quiet), and Hibernating (long gone,
+low value).
+
+RFM tells you the *state*; it doesn't tell you the *play*. To get from segment
+to action I paired it with Amplitude's *Mastering Retention* playbook, which
+frames retention as distinct motions for distinct cohorts — protect the
+Champions, intervene on the At-Risk before they're gone, and don't overspend
+reactivating the Hibernating. The combination turned a scatter of scores into a
+short list of named groups with a recommended motion attached to each.
+
+## Architecture
+
+This rode on the same platform as the ops work rather than a separate stack:
+
+- Customer transaction history extracted via the existing **Prefect** flows and
+  landed in **MinIO**.
+- **DuckDB** computed the RFM scores — recency from last purchase date,
+  frequency as a purchase count over the window, monetary as summed value —
+  then bucketed each dimension into quantiles and mapped the combinations to
+  named segments.
+- **Metabase** rendered the segments as an editorial scatter (recency against
+  frequency, point size by monetary value) plus a plain table the growth team
+  could filter and, critically, export as a call list.
+
+Keeping it on the shared platform meant the segmentation refreshed on the same
+schedule as everything else, instead of being a notebook someone ran by hand
+once and never again.
+
+## Outcome
+
+The growth team stopped treating the base as one undifferentiated list. Three
+cohorts came out with clear motions: Champions to protect and upsell, At-Risk to
+intervene on while intervention still works, and Hibernating to deprioritise.
+The tangible artefact was a ranked, exportable list of who to contact — finite,
+prioritised, and refreshed automatically rather than reconstructed from memory.
+
+The framing mattered as much as the math. "Call these 200 At-Risk learners
+before they churn" is a sentence a sales lead can act on this morning; "here is
+the RFM matrix" is not.
+
+## Reflection
+
+RFM is descriptive, not predictive — it tells you where someone is, not where
+they're heading. The natural next step is a propensity model that estimates
+churn probability and expected value so the call list ranks by likely impact,
+not just current state.
+
+I'd also instrument the loop end to end: tag who got contacted, from which
+cohort, with which motion, and watch their next-period RFM movement. Without
+that feedback the segmentation is a reasonable hypothesis; with it, it becomes
+a system that learns which interventions actually move people between cohorts.

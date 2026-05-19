@@ -1,0 +1,94 @@
+---
+slug: unified-ops-data-platform
+title: Unified Ops Data Platform
+dek: How we collapsed five departments' worth of fragmented spreadsheets into one queryable platform.
+tags: [Data Platform, ETL, "2025"]
+year: 2025
+cover: node-graph
+metrics:
+  - label: Departments unified
+    value: "5"
+  - label: Manual report hours saved / week
+    value: "~9"
+  - label: Single source of truth
+    value: Metabase
+---
+
+> DRAFT — AI-drafted from CV bullets. Numbers marked "~" are illustrative until Hafizh confirms exact figures. Review before publishing.
+
+## Problem
+
+Boer ran on spreadsheets. PMO tracked KPIs and SLAs in one workbook, Managed
+Services watched alerts in another, General Affairs kept inventory in a third,
+and EduTech sales plus marketing performance lived in two more — each owned by a
+different person, each with its own definition of words like "active",
+"closed", and `status_2`. Leadership reviews started with twenty minutes of
+reconciling whose number was right before anyone could discuss what the number
+meant. Nobody trusted a figure they hadn't personally exported.
+
+The cost wasn't just time. Decisions drifted toward whoever had the most
+confident spreadsheet, not the most accurate one. The brief was simple to say
+and hard to do: every department should see the same numbers, from the same
+place, refreshed without anyone re-typing anything.
+
+## Approach
+
+I treated this as a data-engineering problem first and a translation problem
+second — and the translation half mattered more than it looked.
+
+The engineering: stand up one pipeline pattern that every source could follow,
+rather than five bespoke scripts. Extract from wherever the data actually lived
+(REST APIs, exported sheets, a transactional Postgres), apply the business
+logic that turned raw rows into the definitions leadership used, and land
+everything in object storage that any tool could read.
+
+The translation: before writing a single transform I wrote down what each field
+*meant*. What counts as an SLA breach? When is a deal "won"? That document — the
+data dictionary — became the spec the pipelines were tested against, not an
+afterthought written once the code shipped.
+
+## Architecture
+
+Sources fan into a single orchestration layer and flow down a linear path:
+
+- **Prefect** runs extraction and transformation as discrete tasks composed
+  into flows, scheduled as deployments. One flow per source domain, all sharing
+  common transform utilities so a fix to date-parsing fixes it everywhere.
+- **MinIO** (S3-compatible object storage) holds both the raw pulls and the
+  processed, conformed tables. Raw is kept so any transform bug is replayable
+  without re-hitting a flaky upstream API.
+- **DuckDB** queries the processed layer directly out of object storage — fast
+  analytical reads without standing up a warehouse.
+- **Metabase** sits on top as the one dashboard surface. Every department's view
+  is a question against the same conformed tables, so "active customer" renders
+  identically whether marketing or PMO is looking.
+
+The hard parts were not the boxes; they were the edges. Heterogeneous sources
+meant defensive parsing — half-empty sheets, APIs that changed field casing,
+timezone drift between systems. Keeping raw payloads made those debuggable
+instead of catastrophic.
+
+## Outcome
+
+Leadership reviews stopped opening with reconciliation. The first agenda item
+became the discussion, not the audit. Five previously siloed domains — PMO
+KPI/SLA tracking, Managed Services alerting, General Affairs inventory, EduTech
+sales, and marketing performance — resolved to one Metabase layer reading from
+one conformed store.
+
+The quieter win was onboarding. A new analyst could read the data dictionary and
+the SOPs and answer their own questions instead of booking time with whoever
+built the original sheet. Knowledge stopped living only in people's heads.
+
+## Reflection
+
+If I did this again I'd version the conformed schema explicitly from day one.
+We absorbed source changes correctly, but downstream consumers occasionally got
+surprised by a column rename that was "obvious" to me and invisible to them — a
+changelog and contract would have removed that friction entirely.
+
+I'd also push lightweight data-quality checks earlier in the flow — row counts,
+null-rate thresholds, freshness assertions — so a silently empty upstream fails
+loudly in Prefect rather than quietly in a dashboard someone trusts. The
+platform earned trust because the numbers agreed; protecting that trust is
+mostly about catching the day they wouldn't.

@@ -1,0 +1,87 @@
+---
+slug: local-data-stack
+title: From Zero to Local Data Stack
+dek: Building a reproducible MinIO + DuckDB + Metabase environment that runs identically on a laptop and on the team server.
+tags: [Infrastructure, Docker, "2025"]
+year: 2025
+cover: docker-stack
+metrics:
+  - label: Stack services
+    value: "3"
+  - label: Setup
+    value: One compose up
+  - label: Era
+    value: Internship
+---
+
+> DRAFT — AI-drafted from CV bullets. Review and adjust before publishing.
+
+## Problem
+
+This was the internship, and the internship's first lesson was that "works on
+my machine" is not a deployment strategy. The team needed an analytical
+environment — somewhere to store data, query it, and visualise it — that
+behaved the same whether it ran on my laptop while I was learning or on the
+shared server once pipelines were real. Without that, every promotion from
+local experiment to team asset was a manual, error-prone re-setup, and every
+"it broke in the server" was unreproducible by definition.
+
+## Approach
+
+I optimised for reproducibility over cleverness. The goal was a stack anyone
+could bring up with one command and trust to be identical to everyone else's,
+because parity between environments is what makes a pipeline you wrote
+yesterday still true tomorrow.
+
+That meant containerising everything from the start rather than installing tools
+directly and documenting the steps. If the environment is a file, it can be
+versioned, reviewed, and rebuilt from scratch; if it's a sequence of README
+commands, it rots the moment someone skips step 4.
+
+## Architecture
+
+Three services, one definition:
+
+- **MinIO** for S3-compatible object storage — the data lake, with the same API
+  locally as the production-style target so storage code didn't change between
+  environments.
+- **DuckDB** as the query engine, reading directly from the object store —
+  analytical SQL without provisioning a database server.
+- **Metabase** as the visualisation layer, pointed at the query engine so
+  results were inspectable, not just printed in a terminal.
+
+All three were declared in a **Dockerfile** plus **Docker Compose**, so the
+entire stack came up with a single command and the same versions for everyone.
+The **Prefect** pipelines I was learning to build — extracting from external
+APIs, transforming with Pandas, orchestrating as tasks, flows, and deployments —
+ran against this stack, so the thing I tested locally was the thing that ran on
+the server.
+
+Alongside the build I completed a Linux Administration course on ADINUSA, which
+turned the server from a black box into something I could actually operate, and
+I tracked deliverables and decisions in GitLab issue tickets so the project had
+an audit trail instead of a memory.
+
+## Outcome
+
+The stack went from nothing to a reproducible, one-command environment that ran
+identically on a laptop and on the team server. "Works on my machine" became
+"works on the machine, which is defined in this file." The Prefect pipelines
+built on top inherited that reproducibility for free — local-to-server parity
+meant promoting a pipeline was a non-event instead of a debugging session.
+
+More importantly for an internship, it built the foundation the later
+production work stood on. The Unified Ops Data Platform didn't start from zero;
+it started from this.
+
+## Reflection
+
+The honest gap was observability. The stack ran reliably, but when something
+misbehaved I was reading container logs by hand. A small amount of structured
+logging and a health endpoint per service would have turned guesswork into a
+glance.
+
+I'd also pin and document versions more deliberately. "Latest" is convenient
+during a fast-moving internship and a quiet liability afterwards — reproducible
+*today* and reproducible *next quarter* are different promises, and only the
+second one actually matters.
