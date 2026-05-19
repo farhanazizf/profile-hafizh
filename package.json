@@ -6,7 +6,7 @@
   "private": true,
   "scripts": {
     "dev": "vite-react-ssg dev",
-    "build": "vite-react-ssg build && node scripts/gen-sitemap.mjs",
+    "build": "VITE_BUILD_DATE=$(date +%F) vite-react-ssg build && node scripts/gen-sitemap.mjs",
     "preview": "vite preview",
     "typecheck": "tsc --noEmit",
     "test": "vitest run"
