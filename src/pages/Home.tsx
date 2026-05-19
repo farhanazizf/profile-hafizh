@@ -5,6 +5,7 @@ import SkillsMatrix from '../components/sections/SkillsMatrix'
 import Contact from '../components/sections/Contact'
 import Footer from '../components/sections/Footer'
 import StackDiagram from '../components/sections/StackDiagram'
+import SelectedWork from '../components/sections/SelectedWork'
 
 export default function Home() {
   return (
@@ -13,7 +14,7 @@ export default function Home() {
         <Hero />
         <About />
         <Experience />
-        {/* §04 Selected Work — Task 14 */}
+        <SelectedWork />
         <StackDiagram />
         <SkillsMatrix />
         <Contact />
