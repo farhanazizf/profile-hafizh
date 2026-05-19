@@ -148,6 +148,16 @@ body {
   }
 }
 
+/* Flowing-data dotted lines for the stack diagram (spec §05) */
+.flow-line {
+  animation: flow-dash 1.4s linear infinite;
+}
+@keyframes flow-dash {
+  to {
+    stroke-dashoffset: -16;
+  }
+}
+
 .sr-only {
   position: absolute;
   width: 1px;

@@ -4,6 +4,7 @@ import Experience from '../components/sections/Experience'
 import SkillsMatrix from '../components/sections/SkillsMatrix'
 import Contact from '../components/sections/Contact'
 import Footer from '../components/sections/Footer'
+import StackDiagram from '../components/sections/StackDiagram'
 
 export default function Home() {
   return (
@@ -13,7 +14,7 @@ export default function Home() {
         <About />
         <Experience />
         {/* §04 Selected Work — Task 14 */}
-        {/* §05 Stack diagram — Task 12 */}
+        <StackDiagram />
         <SkillsMatrix />
         <Contact />
       </main>
